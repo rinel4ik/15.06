@@ -1,0 +1,109 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace num 10
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            var style1 = FontStyleFactory.GetStyle("Arial", 12, false, false, ConsoleColor.White);
+            var fragment1 = new TextFragment("Обычный текст", style1);
+
+            var style2 = FontStyleFactory.GetStyle("Times New Roman", 14, true, false, ConsoleColor.Red);
+            var fragment2 = new TextFragment("Важный заголовок", style2);
+
+            var style3 = FontStyleFactory.GetStyle("Arial", 12, false, false, ConsoleColor.White);
+            var fragment3 = new TextFragment("Еще обычный текст", style3);
+
+            var style4 = FontStyleFactory.GetStyle("Courier New", 10, false, true, ConsoleColor.Green);
+            var fragment4 = new TextFragment("Код программы", style4);
+
+            fragment1.Display();
+            fragment2.Display();
+            fragment3.Display();
+            fragment4.Display();
+
+            FontStyleFactory.PrintAllStyles();
+        }
+    }
+    public class FontStyle
+    {
+        public string FontFamily { get; }
+        public int Size { get; }
+        public bool IsBold { get; }
+        public bool IsItalic { get; }
+        public ConsoleColor Color { get; }
+
+        public FontStyle(string fontFamily, int size, bool isBold, bool isItalic, ConsoleColor color)
+        {
+            FontFamily = fontFamily;
+            Size = size;
+            IsBold = isBold;
+            IsItalic = isItalic;
+            Color = color;
+        }
+
+        public void Apply()
+        {
+            Console.ForegroundColor = Color;
+            Console.WriteLine($"Применен стиль: {FontFamily} {Size}pt " +
+                             $"{(IsBold ? "Жирный" : "")} " +
+                             $"{(IsItalic ? "Курсив" : "")} " +
+                             $"{Color}");
+        }
+    }
+
+    public static class FontStyleFactory
+    {
+        private static readonly Dictionary<string, FontStyle> _styles = new Dictionary<string, FontStyle>();
+
+        public static FontStyle GetStyle(string fontFamily, int size, bool isBold, bool isItalic, ConsoleColor color)
+        {
+            string key = $"{fontFamily}_{size}_{isBold}_{isItalic}_{color}";
+
+            if (!_styles.ContainsKey(key))
+            {
+
+                _styles[key] = new FontStyle(fontFamily, size, isBold, isItalic, color);
+                Console.WriteLine($"Создан новый стиль: {key}");
+            }
+            else
+            {
+                Console.WriteLine($"Используем существующий стиль: {key}");
+            }
+
+            return _styles[key];
+        }
+
+        public static void PrintAllStyles()
+        {
+            Console.WriteLine("\nВсе созданные стили:");
+            foreach (var key in _styles.Keys)
+            {
+                Console.WriteLine($"- {key}");
+            }
+        }
+    }
+
+    public class TextFragment
+    {
+        public string Text { get; }
+        public FontStyle Style { get; }
+
+        public TextFragment(string text, FontStyle style)
+        {
+            Text = text;
+            Style = style;
+        }
+
+        public void Display()
+        {
+            Console.Write($"Текст: '{Text}' ");
+            Style.Apply();
+        }
+    }
+}
