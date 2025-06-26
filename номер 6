@@ -1,0 +1,56 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace num 6
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            var legacyBankAPI = new LegacyBankAPI();
+
+            IPaymentProcessor paymentProcessor = new BankAdapter(legacyBankAPI);
+
+
+            decimal paymentAmount = 100.00m; 
+            string currency = "USD";
+            string accountNumber = "123456789";
+
+            bool result = paymentProcessor.ProcessPayment(paymentAmount, currency, accountNumber);
+
+            Console.WriteLine($"Платеж успешно обработан: {result}");
+        }
+    }
+    public interface IPaymentProcessor
+    {
+        bool ProcessPayment(decimal amount, string currency, string accountNumber);
+    }
+
+    public class LegacyBankAPI
+    {
+        public bool MakePayment(double amountInDollars, string currencyCode, string account)
+        {
+            Console.WriteLine($"Обработка платежей по {amountInDollars} {currencyCode} для учетной записи {account}.");
+            return true; 
+        }
+    }
+
+    public class BankAdapter : IPaymentProcessor
+    {
+        private readonly LegacyBankAPI _legacyBankAPI;
+
+        public BankAdapter(LegacyBankAPI legacyBankAPI)
+        {
+            _legacyBankAPI = legacyBankAPI;
+        }
+
+        public bool ProcessPayment(decimal amount, string currency, string accountNumber)
+        {
+            double amountInDollars = (double)amount;
+            return _legacyBankAPI.MakePayment(amountInDollars, currency, accountNumber);
+        }
+    }
+}
