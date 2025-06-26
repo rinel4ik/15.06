@@ -1,0 +1,98 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace num 2
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            ReportBuilder pdfBuilder = new PDFReportBuilder();
+            ReportDirector director = new ReportDirector(pdfBuilder);
+            director.BuildReport();
+            Report report = director.GetReport();
+            Console.WriteLine(report);
+        }
+    }
+
+    public class Report
+    {
+        public string Title { get; set; }
+        public string Tables { get; set; }
+        public string Charts { get; set; }
+        public string Footnotes { get; set; }
+
+        public override string ToString()
+        {
+            return $"Заголовок: {Title}\n" +
+                   $"Таблицы: {Tables}\n" +
+                   $"Графики: {Charts}\n" +
+                   $"Подписи: {Footnotes}";
+        }
+    }
+    public abstract class ReportBuilder
+    {
+        protected Report report = new Report();
+
+        public abstract void SetTitle(string title);
+        public abstract void AddTables(string tables);
+        public abstract void AddCharts(string charts);
+        public abstract void AddFootnotes(string footnotes);
+
+        public Report GetResult()
+        {
+            return report;
+        }
+    }
+
+    public class PDFReportBuilder : ReportBuilder
+    {
+        public override void SetTitle(string title)
+        {
+            report.Title = title;
+        }
+
+        public override void AddTables(string tables)
+        {
+            report.Tables = tables;
+        }
+
+        public override void AddCharts(string charts)
+        {
+            report.Charts = charts;
+        }
+
+        public override void AddFootnotes(string footnotes)
+        {
+            report.Footnotes = footnotes;
+        }
+    }
+    public class ReportDirector
+    {
+        private readonly ReportBuilder builder;
+
+        public ReportDirector(ReportBuilder builder)
+        {
+            this.builder = builder;
+        }
+
+        public void BuildReport()
+        {
+            builder.SetTitle("Ежемесячный отчет");
+
+            builder.AddTables("Таблица 1: Продажи\nТаблица 2: Расходы");
+
+            builder.AddCharts("График 1: Продажи по месяцам\nГрафик 2: Расходы по месяцам");
+
+            builder.AddFootnotes("Подпись к отчету: Данные собраны из внутренних систем.");
+        }
+
+        public Report GetReport()
+        {
+            return builder.GetResult();
+        }
+    }
+}
