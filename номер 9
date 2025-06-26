@@ -1,0 +1,83 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace num 9
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            var buildFacade = new BuildFacade();
+
+            buildFacade.BuildAndDeploy();
+        }
+    }
+
+    public class Compiler
+    {
+        public void Compile()
+        {
+            Console.WriteLine("Компиляция исходного кода...");
+        }
+    }
+
+    public class TestRunner
+    {
+        public void RunTests()
+        {
+            Console.WriteLine("Запуск тестов...");
+        }
+    }
+
+    public class Packager
+    {
+        public void Package()
+        {
+            Console.WriteLine("Упаковка приложения...");
+        }
+    }
+
+    public class Deployer
+    {
+        public void Deploy()
+        {
+            Console.WriteLine("Публикация сборки...");
+        }
+    }
+
+    public class BuildFacade
+    {
+        private readonly Compiler _compiler;
+        private readonly TestRunner _testRunner;
+        private readonly Packager _packager;
+        private readonly Deployer _deployer;
+
+        public BuildFacade()
+        {
+            _compiler = new Compiler();
+            _testRunner = new TestRunner();
+            _packager = new Packager();
+            _deployer = new Deployer();
+        }
+
+        public void BuildAndDeploy()
+        {
+            Console.WriteLine("Начало сборки...");
+            _compiler.Compile();
+
+            Console.WriteLine("Запуск тестирования...");
+            _testRunner.RunTests();
+
+            Console.WriteLine("Упаковка...");
+            _packager.Package();
+
+            Console.WriteLine("Деплой...");
+            _deployer.Deploy();
+
+            Console.WriteLine("Сборка и публикация завершены.");
+        }
+    }
+}
