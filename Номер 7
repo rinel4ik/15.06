@@ -1,0 +1,88 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace num 7
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            ISender emailSender = new EmailSender();
+            ISender smsSender = new SmsSender();
+            ISender pushSender = new PushSender();
+
+            Notification simpleEmailNotification = new SimpleNotification(emailSender);
+            Notification urgentSmsNotification = new UrgentNotification(smsSender);
+            Notification simplePushNotification = new SimpleNotification(pushSender);
+
+
+            simpleEmailNotification.Notify("Добро пожаловать на наш сервис!");
+            urgentSmsNotification.Notify("Ваши действия необходимы немедленно!");
+            simplePushNotification.Notify("Доступны новые обновления.");
+        }
+    }
+    public interface ISender
+    {
+        void Send(string message);
+    }
+
+    public class EmailSender : ISender
+    {
+        public void Send(string message)
+        {
+            Console.WriteLine($"Отправка электронной почты: {message}");
+        }
+    }
+
+    public class SmsSender : ISender
+    {
+        public void Send(string message)
+        {
+            Console.WriteLine($"Отправка SMS: {message}");
+        }
+    }
+
+    public class PushSender : ISender
+    {
+        public void Send(string message)
+        {
+            Console.WriteLine($"Отправка Push-уведомления: {message}");
+        }
+    }
+
+    public abstract class Notification
+    {
+        protected ISender _sender;
+
+        protected Notification(ISender sender)
+        {
+            _sender = sender;
+        }
+
+        public abstract void Notify(string message);
+    }
+
+
+    public class SimpleNotification : Notification
+    {
+        public SimpleNotification(ISender sender) : base(sender) { }
+
+        public override void Notify(string message)
+        {
+            _sender.Send($"Простое уведомление: {message}");
+        }
+    }
+
+    public class UrgentNotification : Notification
+    {
+        public UrgentNotification(ISender sender) : base(sender) { }
+
+        public override void Notify(string message)
+        {
+            _sender.Send($"СРОЧНОЕ уведомление: {message}");
+        }
+    }
+}
