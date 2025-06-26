@@ -1,0 +1,68 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace num 3
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            ProcessNode rootNode = new ProcessNode("Начать");
+            rootNode.Parameters["Timeout"] = 30;
+            rootNode.Parameters["Priority"] = "Высокий";
+
+            ProcessNode childNode = new ProcessNode("Decision");
+            childNode.Parameters["Condition"] = "IsApproved";
+
+            rootNode.ChildNodes.Add(childNode);
+
+            ProcessNode clonedNode = rootNode.Clone();
+
+            clonedNode.Name = "Начать клонирование";
+            clonedNode.Parameters["Timeout"] = 60;
+
+            Console.WriteLine($"Исходное имя узла: {rootNode.Name}");
+            Console.WriteLine($"Имя клонированного узла: {clonedNode.Name}");
+            Console.WriteLine($"Первоначальный тайм-аут: {rootNode.Parameters["Timeout"]}");
+            Console.WriteLine($"Клонированный тайм-аут: {clonedNode.Parameters["Timeout"]}");
+        }
+    }
+    public interface IPrototype<T>
+    {
+        T Clone();
+    }
+
+    public class ProcessNode : IPrototype<ProcessNode>
+    {
+        public string Name { get; set; }
+        public Dictionary<string, object> Parameters { get; set; }
+        public List<ProcessNode> ChildNodes { get; set; }
+
+        public ProcessNode(string name)
+        {
+            Name = name;
+            Parameters = new Dictionary<string, object>();
+            ChildNodes = new List<ProcessNode>();
+        }
+
+        public ProcessNode Clone()
+        {
+            ProcessNode clone = new ProcessNode(this.Name);
+
+            foreach (var param in this.Parameters)
+            {
+                clone.Parameters.Add(param.Key, param.Value);
+            }
+
+            foreach (var child in this.ChildNodes)
+            {
+                clone.ChildNodes.Add(child.Clone());
+            }
+
+            return clone;
+        }
+    }
+}
