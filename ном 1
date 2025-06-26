@@ -1,0 +1,142 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace num 1
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            IUIFactory factory;
+
+            Console.WriteLine("Выберите платформу (1 - Web, 2 - Desktop):");
+            var choice = Console.ReadLine();
+
+            if (choice == "1")
+                factory = new WebUIFactory();
+            else
+                factory = new DesktopUIFactory();
+
+
+            var button = factory.CreateButton();
+            var textBox = factory.CreateTextBox();
+            var checkBox = factory.CreateCheckBox();
+
+            button.Describe();
+            textBox.Describe();
+            checkBox.Describe();
+        }
+    }
+
+    public interface IButton
+    {
+        void Describe();
+    }
+
+    public interface ITextBox
+    {
+        void Describe();
+    }
+
+    public interface ICheckBox
+    {
+        void Describe();
+    }
+
+
+    public class WebButton : IButton
+    {
+        public void Describe()
+        {
+            Console.WriteLine("Создание веб-кнопки");
+        }
+    }
+
+    public class WebTextBox : ITextBox
+    {
+        public void Describe()
+        {
+            Console.WriteLine("Визуализация веб-текстового поля.");
+        }
+    }
+
+    public class WebCheckBox : ICheckBox
+    {
+        public void Describe()
+        {
+            Console.WriteLine("Установка веб-флажка");
+        }
+    }
+    public class DesktopButton : IButton
+    {
+        public void Describe()
+        {
+            Console.WriteLine("Создание кнопки на рабочем столе");
+        }
+    }
+
+    public class DesktopTextBox : ITextBox
+    {
+        public void Describe()
+        {
+            Console.WriteLine("Визуализация текстового поля на рабочем столе.");
+        }
+    }
+
+    public class DesktopCheckBox : ICheckBox
+    {
+        public void Describe()
+        {
+            Console.WriteLine("Установление флажка для отображения на рабочем столе.");
+        }
+    }
+
+    public interface IUIFactory
+    {
+        IButton CreateButton();
+
+        ITextBox CreateTextBox();
+
+        ICheckBox CreateCheckBox();
+    }
+
+    public class WebUIFactory : IUIFactory
+    {
+        public IButton CreateButton()
+        {
+            return new WebButton();
+        }
+
+        public ITextBox CreateTextBox()
+        {
+            return new WebTextBox();
+        }
+
+        public ICheckBox CreateCheckBox()
+        {
+            return new WebCheckBox();
+        }
+    }
+
+    public class DesktopUIFactory : IUIFactory
+    {
+        public IButton CreateButton()
+        {
+            return new DesktopButton();
+        }
+
+        public ITextBox CreateTextBox()
+        {
+            return new DesktopTextBox();
+        }
+
+        public ICheckBox CreateCheckBox()
+        {
+            return new DesktopCheckBox();
+        }
+    }
+
+}
