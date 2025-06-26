@@ -1,0 +1,72 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.IO;
+
+
+namespace num 5
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            var configManager = ConfigurationManager.Instance;
+
+            var someSetting = configManager.GetConfiguration("SomeSetting");
+
+            Console.WriteLine($"Значение SomeSetting: {someSetting}");
+        }
+    }
+    public class ConfigurationManager
+    {
+        private static readonly Lazy<ConfigurationManager> _instance =
+            new Lazy<ConfigurationManager>(() => new ConfigurationManager());
+
+        private Dictionary<string, string> _configurations;
+
+        private ConfigurationManager()
+        {
+            LoadConfigurations();
+        }
+
+        public static ConfigurationManager Instance => _instance.Value;
+
+        private void LoadConfigurations()
+        {
+            _configurations = new Dictionary<string, string>();
+
+            try
+            {
+                var lines = File.ReadAllLines("config.txt");
+                foreach (var line in lines)
+                {
+                    if (string.IsNullOrWhiteSpace(line) || line.StartsWith("#"))
+                        continue;
+
+                    var parts = line.Split(new[] { '=' }, 2);
+                    if (parts.Length == 2)
+                    {
+                        var key = parts[0].Trim();
+                        var value = parts[1].Trim();
+                        _configurations[key] = value;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при загрузке конфигураций: {ex.Message}");
+                _configurations = new Dictionary<string, string>();
+            }
+        }
+
+        public string GetConfiguration(string key)
+        {
+            _configurations.TryGetValue(key, out var value);
+            return value;
+        }
+    }
+
+}
