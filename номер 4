@@ -1,0 +1,77 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace num 4
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            var feedbackType = FeedbackType.Suggestion;
+
+            var handler = FeedbackHandlerFactory.CreateHandler(feedbackType);
+            handler.ProcessFeedback();
+
+            var complaintHandler = FeedbackHandlerFactory.CreateHandler(FeedbackType.Complaint);
+            complaintHandler.ProcessFeedback();
+        }
+    }
+
+
+    public interface IFeedbackHandler
+    {
+        void ProcessFeedback();
+    }
+
+    public enum FeedbackType
+    {
+        Complaint,
+        Suggestion,
+        Question
+    }
+
+    public class ComplaintHandler : IFeedbackHandler
+    {
+        public void ProcessFeedback()
+        {
+            Console.WriteLine("Принята жалоба. Отправляем в службу контроля качества...");
+        }
+    }
+
+    public class SuggestionHandler : IFeedbackHandler
+    {
+        public void ProcessFeedback()
+        {
+            Console.WriteLine("Получено предложение. Передаем в отдел разработки...");
+        }
+    }
+
+    public class QuestionHandler : IFeedbackHandler
+    {
+        public void ProcessFeedback()
+        {
+            Console.WriteLine("Поступил вопрос. Формируем ответ пользователю...");
+        }
+    }
+
+    public static class FeedbackHandlerFactory
+    {
+        public static IFeedbackHandler CreateHandler(FeedbackType type)
+        {
+            switch (type)
+            {
+                case FeedbackType.Complaint:
+                    return new ComplaintHandler();
+                case FeedbackType.Suggestion:
+                    return new SuggestionHandler();
+                case FeedbackType.Question:
+                    return new QuestionHandler();
+                default:
+                    throw new ArgumentException("Неизвестный тип обратной связи");
+            }
+        }
+    }
+}
